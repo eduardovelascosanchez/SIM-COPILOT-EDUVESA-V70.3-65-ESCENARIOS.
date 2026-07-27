@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07141f">
-<title>SimCopilot EDUVESA V7.0.5</title>
+<title>SimCopilot EDUVESA V7.0.6</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <style>html,body{margin:0;min-height:100%;background:#07141f;color:#eef8fb}.view{display:none}.view.active{display:block}</style>
-<link rel="stylesheet" href="./styles.css?v=70.5">
+<link rel="stylesheet" href="./styles.css?v=70.6">
 </head>
 <body>
 <header class="topbar">
-  <div class="brand"><span class="logo">S</span><div><b>SimCopilot</b><small>EDUVESA · V7.0.5</small></div></div>
+  <div class="brand"><span class="logo">S</span><div><b>SimCopilot</b><small>EDUVESA · V7.0.6</small></div></div>
   <div><span id="connectionBadge" class="chip">Local</span> <button id="installBtn" class="btn hidden">Instalar</button> <button id="instructorBtn" class="btn">Panel instructor</button></div>
 </header>
 
@@ -64,18 +64,18 @@
 <p class="center"><button id="downloadReportBtn" class="btn primary">Descargar reporte</button> <button id="printBtn" class="btn">Imprimir/PDF</button> <button id="newSessionBtn" class="btn">Nueva sesión</button></p></section>
 </main>
 
-<dialog id="instructorDialog"><form method="dialog" class="dialog"><div class="heading"><h2>Panel instructor</h2><button value="cancel" class="btn">×</button></div>
+<dialog id="instructorDialog"><form method="dialog" class="dialog"><div class="heading"><h2>Panel instructor</h2><button type="button" class="btn" aria-label="Cerrar panel instructor" onclick="this.closest('dialog').close()">×</button></div>
 <div id="pinGate"><p>PIN inicial: <b>2026</b></p><input id="pinInput" type="password"><button id="unlockBtn" type="button" class="btn primary full">Desbloquear</button></div>
 <div id="instructorControls" class="hidden"><div class="grid3"><label>FC<input id="manualHr" type="number"></label><label>SpO₂<input id="manualSpo2" type="number"></label><label>TA sistólica<input id="manualSys" type="number"></label><label>TA diastólica<input id="manualDia" type="number"></label><label>FR<input id="manualRr" type="number"></label><label>ETCO₂<input id="manualEtco2" type="number"></label></div>
 <button id="applyVitalsBtn" type="button" class="btn full">Aplicar signos vitales</button><label>Ritmo<select id="rhythmSelect"><option>Sinusal</option><option>Bradicardia</option><option>TSV</option><option>TV</option><option>FV</option><option>AESP</option><option>Asistolia</option></select></label>
 <p><button id="toggleDeteriorationBtn" type="button" class="btn">Iniciar deterioro</button> <button id="criticalErrorBtn" type="button" class="btn danger">Registrar error crítico</button></p>
 <label>Decisión<select id="decisionSelect"><option value="">Automática</option><option>Aprueba</option><option>Remediación</option><option>No aprueba</option></select></label><button id="instructorFinishBtn" type="button" class="btn primary full">Finalizar escenario</button></div></form></dialog>
 
-<dialog id="generatorDialog"><form method="dialog" id="generatorForm" class="dialog"><div class="heading"><h2>Generador de escenarios</h2><button value="cancel" class="btn">×</button></div>
+<dialog id="generatorDialog"><form method="dialog" id="generatorForm" class="dialog"><div class="heading"><h2>Generador de escenarios</h2><button type="button" class="btn" aria-label="Cerrar generador" onclick="this.closest('dialog').close()">×</button></div>
 <div class="grid2"><label>Programa<select id="genProgram"><option>PALS</option><option>NRP</option></select></label><label>Dificultad<select id="genDifficulty"><option>Básica</option><option>Intermedia</option><option>Avanzada</option></select></label></div>
-<label>Problema principal<input id="genProblem" required></label><label>Tipo de paciente<input id="genPatient" required></label><button class="btn primary full">Crear borrador</button><div id="generatedScenario" class="notice hidden"></div></form></dialog>
+<label>Problema principal<input id="genProblem" required></label><label>Tipo de paciente<input id="genPatient" required></label><button type="submit" class="btn primary full">Crear borrador</button><div id="generatedScenario" class="notice hidden"></div></form></dialog>
 
-<dialog id="noteDialog"><form method="dialog" id="noteForm" class="dialog"><div class="heading"><h2>Agregar nota</h2><button value="cancel" class="btn">×</button></div><textarea id="noteText" rows="4" required></textarea><button class="btn primary full">Guardar nota</button></form></dialog>
+<dialog id="noteDialog"><form method="dialog" id="noteForm" class="dialog"><div class="heading"><h2>Agregar nota</h2><button type="button" class="btn" aria-label="Cerrar nota" onclick="this.closest('dialog').close()">×</button></div><textarea id="noteText" rows="4" required></textarea><button type="submit" class="btn primary full">Guardar nota</button></form></dialog>
 <div id="toast" class="toast"></div>
-<script type="module" src="./app.js?v=70.5"></script>
+<script type="module" src="./app.js?v=70.6"></script>
 </body></html>
