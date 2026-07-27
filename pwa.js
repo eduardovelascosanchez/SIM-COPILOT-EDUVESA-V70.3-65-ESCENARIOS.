@@ -1,0 +1,1 @@
+let p=null;export function setupPWA(){addEventListener("beforeinstallprompt",e=>{e.preventDefault();p=e;installBtn.classList.remove("hidden")});installBtn.onclick=async()=>{if(p){p.prompt();await p.userChoice;p=null;installBtn.classList.add("hidden")}};if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"))}

@@ -1,0 +1,4 @@
+SimCopilot EDUVESA V70.3
+39 escenarios PALS
+26 escenarios NRP
+Total: 65
