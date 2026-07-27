@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07141f">
-<title>SimCopilot EDUVESA V7.0.4</title>
+<title>SimCopilot EDUVESA V7.0.5</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <style>html,body{margin:0;min-height:100%;background:#07141f;color:#eef8fb}.view{display:none}.view.active{display:block}</style>
-<link rel="stylesheet" href="./styles.css?v=70.4">
+<link rel="stylesheet" href="./styles.css?v=70.5">
 </head>
 <body>
 <header class="topbar">
-  <div class="brand"><span class="logo">S</span><div><b>SimCopilot</b><small>EDUVESA · V7.0.4</small></div></div>
+  <div class="brand"><span class="logo">S</span><div><b>SimCopilot</b><small>EDUVESA · V7.0.5</small></div></div>
   <div><span id="connectionBadge" class="chip">Local</span> <button id="installBtn" class="btn hidden">Instalar</button> <button id="instructorBtn" class="btn">Panel instructor</button></div>
 </header>
 
@@ -20,7 +20,7 @@
 <section id="homeView" class="view active">
   <div class="hero">
     <div><p class="eyebrow">SIMULACIÓN CLÍNICA · PALS + NRP</p><h1>Entrena decisiones.<br><span>Observa la respuesta.</span></h1>
-    <p>Simulador modular con 65 escenarios PALS y NRP para liderazgo, intervención, monitor dinámico y debriefing local.</p>
+    <p>Simulador modular con 65 escenarios PALS y NRP, panel instructor remoto y secuencia algorítmica.</p>
     <button id="startFlowBtn" class="btn primary">Iniciar simulación →</button>
     <button id="generatorBtn" class="btn">Generar escenario</button></div>
     <div class="panel preview"><h3>Vista previa del monitor</h3><canvas id="heroCanvas"></canvas><div class="vitals"><div>FC<br><b>128</b></div><div>SpO₂<br><b>94</b></div><div>TA<br><b>82/46</b></div></div></div>
@@ -77,5 +77,5 @@
 
 <dialog id="noteDialog"><form method="dialog" id="noteForm" class="dialog"><div class="heading"><h2>Agregar nota</h2><button value="cancel" class="btn">×</button></div><textarea id="noteText" rows="4" required></textarea><button class="btn primary full">Guardar nota</button></form></dialog>
 <div id="toast" class="toast"></div>
-<script type="module" src="./app.js?v=70.4"></script>
+<script type="module" src="./app.js?v=70.5"></script>
 </body></html>
