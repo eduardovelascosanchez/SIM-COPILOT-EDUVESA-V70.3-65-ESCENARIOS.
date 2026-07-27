@@ -1,22 +1,14 @@
 {
-  "name": "SimCopilot EDUVESA V7.0.4 — 65 escenarios",
+  "name": "SimCopilot EDUVESA V7.0.5 — Control remoto y algoritmos",
   "short_name": "SimCopilot",
-  "description": "Simulador educativo modular con 65 escenarios PALS y NRP.",
-  "start_url": "./index.html?v=70.4",
+  "description": "Simulador educativo con 65 escenarios PALS y NRP, panel instructor remoto y secuencia algorítmica.",
+  "start_url": "./index.html?v=70.5",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07141f",
   "theme_color": "#07141f",
   "icons": [
-    {
-      "src": "./icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "./icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
+    {"src": "./icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "./icon-512.png", "sizes": "512x512", "type": "image/png"}
   ]
 }
