@@ -1,4 +1,4 @@
-const CACHE="simcopilot-v70-5";
+const CACHE="simcopilot-v70-6";
 const ASSETS=["./","./index.html","./manifest.webmanifest","./styles.css","./app.js","./scenarios.js","./monitor.js","./clinical-engine.js","./instructor.js","./reports.js","./pwa.js","./algorithms.js","./remote-control.js","./advanced-control.js","./icon-192.png","./icon-512.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))));self.clients.claim()});
