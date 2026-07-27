@@ -1,1 +1,7 @@
-let p=null;export function setupPWA(){addEventListener("beforeinstallprompt",e=>{e.preventDefault();p=e;installBtn.classList.remove("hidden")});installBtn.onclick=async()=>{if(p){p.prompt();await p.userChoice;p=null;installBtn.classList.add("hidden")}};if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"))}
+let deferredPrompt=null;
+export function setupPWA(){
+  const installButton=document.getElementById("installBtn");
+  window.addEventListener("beforeinstallprompt",event=>{event.preventDefault();deferredPrompt=event;installButton?.classList.remove("hidden")});
+  if(installButton)installButton.onclick=async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;installButton.classList.add("hidden")};
+  if("serviceWorker"in navigator)window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js"));
+}
