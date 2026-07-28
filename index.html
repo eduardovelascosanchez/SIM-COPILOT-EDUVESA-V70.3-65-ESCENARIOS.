@@ -5,19 +5,19 @@
 <meta name="theme-color" content="#07141f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>SimCopilot EDUVESA V7.1.0</title>
+<title>SimCopilot EDUVESA V7.1.1</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <style>html,body{margin:0;min-height:100%;background:#07141f;color:#eef8fb}.view{display:none}.view.active{display:block}</style>
-<link rel="stylesheet" href="./styles.css?v=71.0">
-<link rel="stylesheet" href="./remote-fix.css?v=71.0">
-<link rel="stylesheet" href="./vitals-control.css?v=71.0">
-<link rel="stylesheet" href="./instructor-ux.css?v=71.0">
+<link rel="stylesheet" href="./styles.css?v=71.1">
+<link rel="stylesheet" href="./remote-fix.css?v=71.1">
+<link rel="stylesheet" href="./vitals-control.css?v=71.1">
+<link rel="stylesheet" href="./instructor-ux.css?v=71.1">
 </head>
 <body>
 <header class="topbar">
-  <div class="brand"><span class="logo">S</span><div><b>SimCopilot</b><small>EDUVESA · V7.1.0</small></div></div>
+  <div class="brand"><span class="logo">S</span><div><b>SimCopilot</b><small>EDUVESA · V7.1.1</small></div></div>
   <div class="topbar-actions"><span id="roleBadge" class="chip">Elige un rol</span><span id="networkStatus" class="chip status-dot">Comprobando red</span><button id="installBtn" class="btn">Instalar app</button><button id="instructorBtn" class="btn">Panel instructor</button></div>
 </header>
 
@@ -27,7 +27,7 @@
     <div class="hero-copy">
       <p class="eyebrow">COPILOTO PARA INSTRUCTORES · NRP + PALS</p>
       <h1>Simula, controla y facilita.<br><span>Desde dos dispositivos.</span></h1>
-      <p>Una herramienta educativa para cursos de reanimación neonatal y pediátrica con 65 escenarios, monitor dinámico, control remoto del instructor, voz, registro y debriefing estructurado.</p>
+      <p>Herramienta educativa con 65 escenarios, monitor dinámico, control remoto del instructor, voz, registro y debriefing estructurado.</p>
       <div class="home-actions"><button id="startFlowBtn" class="btn primary">Comenzar una sesión →</button><button id="quickGuideBtn" class="btn">Ver guía rápida</button><button id="installGuideBtn" class="btn">Instalar en un dispositivo</button></div>
       <div class="feature-strip"><div class="feature-pill"><b>39</b><span>escenarios PALS</span></div><div class="feature-pill"><b>26</b><span>escenarios NRP</span></div><div class="feature-pill"><b>2</b><span>dispositivos enlazados</span></div><div class="feature-pill"><b>PWA</b><span>celular, tableta y computadora</span></div></div>
     </div>
@@ -38,7 +38,7 @@
     <div class="role-launcher">
       <button id="roleMonitorBtn" type="button" class="role-card primary-role"><span class="role-icon">🖥️</span><strong>Monitor del curso</strong><span>Selecciona el escenario y proyecta el monitor. Un segundo dispositivo puede modificar signos vitales, ritmo, fases y eventos.</span></button>
       <button id="roleInstructorBtn" type="button" class="role-card"><span class="role-icon">🎛️</span><strong>Instructor remoto</strong><span>Conéctate con el código SIM-XXXXXX y controla el caso desde un celular, tableta o computadora independiente.</span></button>
-      <button id="roleLocalBtn" type="button" class="role-card"><span class="role-icon">🧑‍🏫</span><strong>Práctica en un dispositivo</strong><span>Utiliza monitor, intervenciones y panel del instructor en el mismo equipo para demostraciones o preparación docente.</span></button>
+      <button id="roleLocalBtn" type="button" class="role-card"><span class="role-icon">🧑‍🏫</span><strong>Práctica en un dispositivo</strong><span>Utiliza monitor, intervenciones y panel del instructor en el mismo equipo.</span></button>
     </div>
   </section>
 
@@ -51,27 +51,29 @@
   <div class="heading"><div><p class="eyebrow">PASO 2 · CONFIGURACIÓN</p><h2>Prepara la sesión</h2></div><button data-go-home class="btn">← Inicio</button></div>
   <div class="grid2">
     <form id="setupForm" class="panel form">
-      <div class="grid2"><label>Programa<select id="programSelect"><option>PALS</option><option>NRP</option></select></label><label>Dificultad<select id="difficultySelect"><option>Básica</option><option selected>Intermedia</option><option>Avanzada</option></select></label></div>
-      <label>Escenario seleccionado<select id="scenarioSelect"></select></label><div id="scenarioPreview" class="notice"></div>
-      <div class="scenario-browser"><div class="scenario-browser-tools"><label>Buscar en la biblioteca<input id="scenarioSearch" type="search" placeholder="Ej. bradicardia, choque, prematuro, ventilación"></label><span id="scenarioVisibleCount" class="chip">0 escenarios</span></div><div id="scenarioCards" class="scenario-cards"></div></div>
+      <div class="grid2"><label>Programa<select id="programSelect"><option>PALS</option><option>NRP</option></select></label><label>Dificultad<select id="difficultySelect"><option selected>Todas</option><option>Básica</option><option>Intermedia</option><option>Avanzada</option></select></label></div>
+      <label>Escenario seleccionado<select id="scenarioSelect" required></select></label>
+      <div id="scenarioPreview" class="notice"></div>
+      <div class="scenario-browser">
+        <div class="scenario-browser-tools">
+          <label>Buscar en la biblioteca<input id="scenarioSearch" type="search" placeholder="Ej. bradicardia, choque, prematuro, ventilación"></label>
+          <div class="scenario-browser-actions"><span id="scenarioVisibleCount" class="chip">0 escenarios</span><button id="scenarioToggleBtn" type="button" class="btn" aria-expanded="true">Ocultar escenarios</button></div>
+        </div>
+        <p class="scenario-help">Toca una tarjeta para seleccionar el caso. Con “Todas” se muestran todos los escenarios del programa elegido.</p>
+        <div id="scenarioCards" class="scenario-cards"></div>
+      </div>
       <div class="grid2"><label>Instructor<input id="instructorName" placeholder="Nombre del instructor"></label><label>Equipo<input id="teamName" placeholder="Ej. Equipo Alfa"></label></div>
       <label>Peso del paciente (kg)<input id="patientWeight" type="number" step="0.1" value="20"></label>
       <button class="btn primary full">Entrar al escenario →</button>
     </form>
-    <aside class="panel form"><p class="eyebrow">BRIEFING DEL INSTRUCTOR</p><h3>Antes de iniciar</h3><ol><li>Asigna líder, vía aérea, compresiones, medicamentos y registro según el caso.</li><li>Verifica monitor, audio, conexión remota y permisos del micrófono.</li><li>Establece seguridad psicológica y explica que se trata de una actividad educativa.</li><li>Decide si utilizarás modo monitor de pantalla completa.</li></ol><div class="notice"><b>Recomendación:</b> usa una computadora o tableta como monitor y un teléfono o segunda tableta como control del instructor.</div><div class="notice">Herramienta educativa. No sustituye protocolos, manuales ni juicio clínico.</div></aside>
+    <aside class="panel form"><p class="eyebrow">BRIEFING DEL INSTRUCTOR</p><h3>Antes de iniciar</h3><ol><li>Asigna funciones.</li><li>Verifica monitor, audio, conexión remota y micrófono.</li><li>Establece seguridad psicológica.</li><li>Decide si utilizarás modo monitor.</li></ol><div class="notice"><b>Recomendación:</b> computadora o tableta como monitor y teléfono o segunda tableta como control.</div><div class="notice">Herramienta educativa. No sustituye protocolos ni juicio clínico.</div></aside>
   </div>
 </section>
 
 <section id="simView" class="view">
   <div class="heading"><div><p id="simProgram" class="eyebrow"></p><h2 id="simTitle"></h2></div><div id="timer" class="timer">00:00</div><div class="top-actions"><button id="monitorModeBtn" class="btn monitor-mode-btn" type="button" aria-pressed="false">Modo monitor</button><button id="voiceBtn" class="btn" aria-pressed="false">Voz</button><button id="pauseBtn" class="btn">Pausar</button><button id="finishBtn" class="btn danger">Finalizar</button></div></div>
   <div class="simgrid">
-    <section class="panel monitor">
-      <div class="heading"><b id="rhythmLabel">Sinusal</b><div class="monitor-status-line"><span id="patientLabel"></span><strong>TA · FR · ETCO₂</strong></div></div>
-      <div class="wave"><span>II</span><canvas id="ecgCanvas"></canvas><b id="hrValue">120</b></div>
-      <div class="wave"><span>SpO₂</span><canvas id="plethCanvas"></canvas><b id="spo2Value">96</b></div>
-      <div class="wave"><span>CO₂</span><canvas id="capnoCanvas"></canvas><b id="etco2Value">35</b></div>
-      <div class="vitals five"><div class="monitor-vital hr"><small>Frecuencia cardiaca</small><b id="hrBottom">120</b><span>lpm</span></div><div class="monitor-vital spo2"><small>Saturación</small><b id="spo2Bottom">96</b><span>%</span></div><div class="monitor-vital bp"><small>TA no invasiva</small><b id="bpValue">90/55</b><span>mmHg</span></div><div class="monitor-vital rr"><small>Frecuencia respiratoria</small><b id="rrValue">24</b><span>rpm</span></div><div class="monitor-vital etco2"><small>ETCO₂</small><b id="etco2Bottom">35</b><span>mmHg</span></div></div>
-    </section>
+    <section class="panel monitor"><div class="heading"><b id="rhythmLabel">Sinusal</b><div class="monitor-status-line"><span id="patientLabel"></span><strong>TA · FR · ETCO₂</strong></div></div><div class="wave"><span>II</span><canvas id="ecgCanvas"></canvas><b id="hrValue">120</b></div><div class="wave"><span>SpO₂</span><canvas id="plethCanvas"></canvas><b id="spo2Value">96</b></div><div class="wave"><span>CO₂</span><canvas id="capnoCanvas"></canvas><b id="etco2Value">35</b></div><div class="vitals five"><div class="monitor-vital hr"><small>Frecuencia cardiaca</small><b id="hrBottom">120</b><span>lpm</span></div><div class="monitor-vital spo2"><small>Saturación</small><b id="spo2Bottom">96</b><span>%</span></div><div class="monitor-vital bp"><small>TA no invasiva</small><b id="bpValue">90/55</b><span>mmHg</span></div><div class="monitor-vital rr"><small>Frecuencia respiratoria</small><b id="rrValue">24</b><span>rpm</span></div><div class="monitor-vital etco2"><small>ETCO₂</small><b id="etco2Bottom">35</b><span>mmHg</span></div></div></section>
     <aside class="panel form"><p class="eyebrow">PRESENTACIÓN</p><p id="caseNarrative"></p><p><b id="goalCount">0/0</b></p><progress id="goalProgress" max="100" value="0"></progress><div id="goalList"></div></aside>
     <section class="panel form"><div class="heading"><h3>Intervenciones</h3><span>Selecciona lo realizado</span></div><div id="interventionGrid" class="actions"></div><div class="defib"><div><small>DESFIBRILADOR</small><br><b><span id="joules">2</span> J/kg</b></div><input id="energyRange" type="range" min="2" max="10" step="2" value="2"><button id="chargeBtn" class="btn">Cargar</button><button id="shockBtn" class="btn danger" disabled>Descarga</button></div></section>
     <aside class="panel form"><div class="heading"><h3>Registro</h3><button id="addNoteBtn" class="btn">+ Nota</button></div><div id="logList" class="log"></div></aside>
@@ -83,12 +85,12 @@
 
 <dialog id="instructorDialog"><form method="dialog" class="dialog"><div class="heading"><div><p class="eyebrow">ACCESO RESTRINGIDO</p><h2>Panel instructor</h2></div><button type="button" class="btn" aria-label="Cerrar panel instructor" onclick="this.closest('dialog').close()">×</button></div><div id="pinGate"><p>Introduce el PIN del instructor. PIN inicial de demostración: <b>2026</b></p><input id="pinInput" type="password" inputmode="numeric"><button id="unlockBtn" type="button" class="btn primary full">Desbloquear panel</button></div><div id="instructorControls" class="hidden"><div class="grid3"><label>FC<input id="manualHr" type="number" min="0" max="300" step="1"></label><label>SpO₂<input id="manualSpo2" type="number" min="0" max="100" step="1"></label><label>TA sistólica<input id="manualSys" type="number" min="0" max="220" step="1"></label><label>TA diastólica<input id="manualDia" type="number" min="0" max="160" step="1"></label><label>FR<input id="manualRr" type="number" min="0" max="100" step="1"></label><label>ETCO₂<input id="manualEtco2" type="number" min="0" max="100" step="1"></label></div><button id="applyVitalsBtn" type="button" class="btn full">Aplicar signos vitales</button><label>Ritmo<select id="rhythmSelect"><option>Sinusal</option><option>Bradicardia</option><option>TSV</option><option>TV</option><option>FV</option><option>AESP</option><option>Asistolia</option></select></label><p><button id="toggleDeteriorationBtn" type="button" class="btn">Iniciar deterioro</button> <button id="criticalErrorBtn" type="button" class="btn danger">Registrar error crítico</button></p><label>Decisión<select id="decisionSelect"><option value="">Automática</option><option>Aprueba</option><option>Remediación</option><option>No aprueba</option></select></label><button id="instructorFinishBtn" type="button" class="btn primary full">Finalizar escenario</button></div></form></dialog>
 
-<dialog id="installDialog"><div class="dialog install-dialog"><div class="heading"><div><p class="eyebrow">INSTALACIÓN PWA</p><h2>Instalar SimCopilot</h2></div><button type="button" class="btn" data-close-dialog>×</button></div><div id="nativeInstallArea" class="notice"><b>Instalación directa:</b> cuando el navegador lo permita, pulsa “Instalar ahora”.</div><button id="nativeInstallBtn" type="button" class="btn primary full">Instalar ahora</button><div class="install-grid"><article class="install-card"><h3>iPhone o iPad</h3><ol><li>Abre la página directamente en Safari.</li><li>Pulsa Compartir.</li><li>Selecciona “Agregar a pantalla de inicio”.</li><li>Confirma con “Agregar”.</li></ol></article><article class="install-card"><h3>Android</h3><ol><li>Abre en Chrome.</li><li>Pulsa el menú ⋮.</li><li>Selecciona “Instalar aplicación” o “Agregar a pantalla principal”.</li><li>Confirma la instalación.</li></ol></article><article class="install-card"><h3>Windows</h3><ol><li>Abre en Chrome o Edge.</li><li>Pulsa el icono de instalación en la barra de direcciones.</li><li>Selecciona “Instalar”.</li></ol></article><article class="install-card"><h3>Mac</h3><ol><li>Abre en Safari o Chrome.</li><li>En Safari, usa Archivo → Agregar al Dock.</li><li>En Chrome, utiliza el icono de instalación.</li></ol></article></div><p class="muted">Una vez instalada, la aplicación se abre como programa independiente. La conexión remota entre dispositivos requiere acceso a internet.</p></div></dialog>
+<dialog id="installDialog"><div class="dialog install-dialog"><div class="heading"><div><p class="eyebrow">INSTALACIÓN PWA</p><h2>Instalar SimCopilot</h2></div><button type="button" class="btn" data-close-dialog>×</button></div><div id="nativeInstallArea" class="notice"><b>Instalación directa:</b> cuando el navegador lo permita, pulsa “Instalar ahora”.</div><button id="nativeInstallBtn" type="button" class="btn primary full">Instalar ahora</button><div class="install-grid"><article class="install-card"><h3>iPhone o iPad</h3><ol><li>Abre en Safari.</li><li>Pulsa Compartir.</li><li>Selecciona “Agregar a pantalla de inicio”.</li></ol></article><article class="install-card"><h3>Android</h3><ol><li>Abre en Chrome.</li><li>Pulsa ⋮.</li><li>Selecciona “Instalar aplicación”.</li></ol></article><article class="install-card"><h3>Windows</h3><ol><li>Abre en Chrome o Edge.</li><li>Pulsa el icono de instalación.</li></ol></article><article class="install-card"><h3>Mac</h3><ol><li>Abre en Safari o Chrome.</li><li>Usa Archivo → Agregar al Dock.</li></ol></article></div><p class="muted">La conexión remota requiere internet.</p></div></dialog>
 
-<dialog id="guideDialog"><div class="dialog guide-dialog"><div class="heading"><div><p class="eyebrow">GUÍA RÁPIDA</p><h2>Uso recomendado para instructores</h2></div><button type="button" class="btn" data-close-dialog>×</button></div><div class="guide-list"><article class="guide-item"><b>1</b><div><h3>Abre el monitor</h3><p>En una computadora o tableta elige “Monitor del curso”, selecciona el escenario y entra al caso.</p></div></article><article class="guide-item"><b>2</b><div><h3>Crea la sesión remota</h3><p>Abre Panel instructor, introduce el PIN y pulsa “Crear sesión en monitor”. Espera el código SIM-XXXXXX activo.</p></div></article><article class="guide-item"><b>3</b><div><h3>Conecta al instructor</h3><p>En el segundo dispositivo elige “Instructor remoto”, desbloquea el panel e introduce el código.</p></div></article><article class="guide-item"><b>4</b><div><h3>Facilita el escenario</h3><p>Modifica FC, SpO₂, TA, FR, ETCO₂ y ritmo; avanza fases o activa errores y eventos sorpresa.</p></div></article><article class="guide-item"><b>5</b><div><h3>Graba y cierra</h3><p>Activa Voz para registrar la conversación. Finaliza para generar el debriefing y descargar el reporte.</p></div></article></div></div></dialog>
+<dialog id="guideDialog"><div class="dialog guide-dialog"><div class="heading"><div><p class="eyebrow">GUÍA RÁPIDA</p><h2>Uso recomendado</h2></div><button type="button" class="btn" data-close-dialog>×</button></div><div class="guide-list"><article class="guide-item"><b>1</b><div><h3>Abre el monitor</h3><p>Elige “Monitor del curso”, selecciona el escenario y entra al caso.</p></div></article><article class="guide-item"><b>2</b><div><h3>Crea la sesión remota</h3><p>Abre Panel instructor, introduce el PIN y pulsa “Crear sesión en monitor”.</p></div></article><article class="guide-item"><b>3</b><div><h3>Conecta al instructor</h3><p>En el segundo dispositivo introduce el código.</p></div></article><article class="guide-item"><b>4</b><div><h3>Facilita</h3><p>Modifica variables, ritmo, fases y eventos.</p></div></article><article class="guide-item"><b>5</b><div><h3>Cierra</h3><p>Finaliza para generar el debriefing y reporte.</p></div></article></div></div></dialog>
 
 <dialog id="generatorDialog"><form method="dialog" id="generatorForm" class="dialog"><div class="heading"><h2>Generador de escenarios</h2><button type="button" class="btn" aria-label="Cerrar generador" onclick="this.closest('dialog').close()">×</button></div><div class="grid2"><label>Programa<select id="genProgram"><option>PALS</option><option>NRP</option></select></label><label>Dificultad<select id="genDifficulty"><option>Básica</option><option>Intermedia</option><option>Avanzada</option></select></label></div><label>Problema principal<input id="genProblem" required></label><label>Tipo de paciente<input id="genPatient" required></label><button type="submit" class="btn primary full">Crear borrador</button><div id="generatedScenario" class="notice hidden"></div></form></dialog>
 <dialog id="noteDialog"><form method="dialog" id="noteForm" class="dialog"><div class="heading"><h2>Agregar nota</h2><button type="button" class="btn" aria-label="Cerrar nota" onclick="this.closest('dialog').close()">×</button></div><textarea id="noteText" rows="4" required></textarea><button type="submit" class="btn primary full">Guardar nota</button></form></dialog>
 <div id="toast" class="toast"></div>
-<script type="module" src="./app.js?v=71.0"></script>
+<script type="module" src="./app.js?v=71.1"></script>
 </body></html>
