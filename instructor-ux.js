@@ -1,8 +1,11 @@
 const $=id=>document.getElementById(id);
 
 function ensureCompatibilityElements(){
+  document.title="SimCopilot EDUVESA V7.1.2";
+  const version=document.querySelector(".brand small");
+  if(version)version.textContent="EDUVESA · V7.1.2";
   const homeActions=document.querySelector(".home-actions");
-  if(!$(`generatorBtn`)&&homeActions){
+  if(!$("generatorBtn")&&homeActions){
     const button=document.createElement("button");
     button.id="generatorBtn";
     button.type="button";
