@@ -1,4 +1,4 @@
-const CACHE="simcopilot-v71-1";
+const CACHE="simcopilot-v71-2";
 const ASSETS=["./","./index.html","./manifest.webmanifest","./styles.css","./remote-fix.css","./vitals-control.css","./instructor-ux.css","./app.js","./scenarios.js","./monitor.js","./clinical-engine.js","./instructor.js","./reports.js","./pwa.js","./algorithms.js","./remote-control.js","./advanced-control.js","./vitals-control.js","./instructor-ux.js","./voice-control.js","./debriefing-engine.js","./icon-192.png","./icon-512.png"];
 
 self.addEventListener("install",event=>{
