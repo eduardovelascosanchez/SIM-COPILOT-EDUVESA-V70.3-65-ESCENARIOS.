@@ -6,13 +6,13 @@ const $=id=>document.getElementById(id);
 
 function injectUi(){
   if(!$("remoteSessionBtn")){
-    const btn=document.createElement("button");
-    btn.id="remoteSessionBtn";
-    btn.className="btn";
-    btn.type="button";
-    btn.textContent="Instructor remoto";
+    const button=document.createElement("button");
+    button.id="remoteSessionBtn";
+    button.className="btn";
+    button.type="button";
+    button.textContent="Instructor remoto";
     const voice=$("voiceBtn");
-    voice?.parentElement?.insertBefore(btn,voice);
+    voice?.parentElement?.insertBefore(button,voice);
   }
 
   if(!$("facilitatorBar")){
@@ -48,7 +48,7 @@ function injectUi(){
         <p class="remote-step-number">1</p>
         <div>
           <h4>Dispositivo del monitor</h4>
-          <p class="muted">Inicia el escenario en la pantalla principal y pulsa el botón. El código solo existe mientras esa pantalla permanece abierta.</p>
+          <p class="muted">Puedes crear el código antes o después de iniciar el escenario. Espera a que el estado indique “Esperando instructor”.</p>
           <button id="createRemoteRoomBtn" type="button" class="btn primary">Crear sesión en monitor</button>
           <button id="copyRemoteLinkBtn" type="button" class="btn" disabled>Compartir enlace del instructor</button>
           <div class="remote-code"><small>Código generado</small><b id="remoteRoomCode">—</b></div>
@@ -68,10 +68,10 @@ function injectUi(){
       </div>`;
     controls.prepend(box);
 
-    const seq=document.createElement("section");
-    seq.className="instructor-sequence";
-    seq.innerHTML='<div class="heading"><div><p class="eyebrow">SECUENCIA DEL CASO</p><h3 id="instructorPhaseTitle">Sin escenario activo</h3></div><span id="instructorPhaseCount" class="chip">0/0</span></div><p id="instructorPhaseInstruction" class="muted"></p><p><button id="advancePhaseBtn" type="button" class="btn primary">Avanzar fase</button> <button id="scenarioErrorBtn" type="button" class="btn danger">Error crítico</button> <button id="scenarioTrickBtn" type="button" class="btn warning">Evento / truco</button></p>';
-    box.after(seq);
+    const sequence=document.createElement("section");
+    sequence.className="instructor-sequence";
+    sequence.innerHTML='<div class="heading"><div><p class="eyebrow">SECUENCIA DEL CASO</p><h3 id="instructorPhaseTitle">Sin escenario activo</h3></div><span id="instructorPhaseCount" class="chip">0/0</span></div><p id="instructorPhaseInstruction" class="muted"></p><p><button id="advancePhaseBtn" type="button" class="btn primary">Avanzar fase</button> <button id="scenarioErrorBtn" type="button" class="btn danger">Error crítico</button> <button id="scenarioTrickBtn" type="button" class="btn warning">Evento / truco</button></p>';
+    box.after(sequence);
   }
 }
 
@@ -82,7 +82,7 @@ export function setupAdvancedControl(api){
 
   function ensureSequence(session){
     if(!session)return;
-    if(!session.sequence||!session.sequence.length){
+    if(!session.sequence?.length){
       session.sequence=buildSequence(session.scenario,session.meta?.program);
       session.phaseIndex=0;
       session.trickIndex=0;
@@ -113,15 +113,19 @@ export function setupAdvancedControl(api){
     });
     if($("rhythmSelect"))$("rhythmSelect").value=vitals.rhythm||"Sinusal";
     if($("decisionSelect"))$("decisionSelect").value=snapshot?.instructorDecision||"";
-    renderPhase(snapshot);
     if($("toggleDeteriorationBtn"))$("toggleDeteriorationBtn").textContent=snapshot?.deterioration?"Detener deterioro":"Iniciar deterioro";
+    renderPhase(snapshot);
   }
 
   function renderAndSend(){
+    const session=api.getSession();
+    if(!session){
+      renderPhase();
+      return;
+    }
     api.render();
     renderPhase();
-    const session=api.getSession();
-    if(session)remote.sendSnapshot(sessionSnapshot(session));
+    remote.sendSnapshot(sessionSnapshot(session));
   }
 
   function setRhythm(session,rhythm){
@@ -137,8 +141,9 @@ export function setupAdvancedControl(api){
   function command(name,payload={}){
     if(remote.isRemoteInstructor())return remote.sendCommand(name,payload)||api.toast("El instructor remoto no está conectado.");
     const session=api.getSession();
-    if(!session)return api.toast("No hay un escenario activo en el monitor.");
+    if(!session)return api.toast("El monitor está conectado, pero aún no se ha iniciado un escenario.");
     ensureSequence(session);
+
     if(name==="setVitals"){
       Object.assign(session.vitals,payload);
       addLog(session,"Instructor modificó FC, SpO₂, TA, FR y ETCO₂","instructor");
@@ -199,10 +204,10 @@ export function setupAdvancedControl(api){
       if(state==="connected"&&api.getSession())api.toast("Instructor remoto conectado");
     },
     onRoom:id=>{
-      api.toast(`Código remoto: ${id}`);
+      api.toast(`Código remoto activo: ${id}`);
       if($("copyRemoteLinkBtn"))$("copyRemoteLinkBtn").disabled=false;
       if($("remoteHelp"))$("remoteHelp").textContent="Comparte el enlace o escribe este código en el segundo dispositivo. Mantén el monitor abierto.";
-      renderAndSend();
+      if(api.getSession())renderAndSend();
     }
   });
 
@@ -212,16 +217,19 @@ export function setupAdvancedControl(api){
   }
 
   $("remoteSessionBtn").onclick=()=>$("instructorBtn").click();
-  $("createRemoteRoomBtn").onclick=()=>api.getSession()?remote.createMonitorRoom():api.toast("Inicia primero un escenario en el monitor.");
+  $("createRemoteRoomBtn").onclick=()=>remote.createMonitorRoom();
   $("connectRemoteBtn").onclick=()=>remote.connectInstructor($("remoteRoomInput").value);
-  $("copyRemoteLinkBtn").onclick=async()=>api.toast(await remote.shareInstructorLink()?"Enlace listo para compartir":"Primero crea una sesión remota");
+  $("copyRemoteLinkBtn").onclick=async()=>api.toast(await remote.shareInstructorLink()?"Enlace listo para compartir":"Espera a que el código quede activo");
 
   $("remoteRoomInput")?.addEventListener("input",event=>{
     event.target.value=event.target.value.toUpperCase().replace(/[^A-Z0-9-]/g,"").slice(0,10);
     if($("connectRemoteBtn"))$("connectRemoteBtn").disabled=false;
   });
   $("remoteRoomInput")?.addEventListener("keydown",event=>{
-    if(event.key==="Enter"){event.preventDefault();remote.connectInstructor(event.currentTarget.value)}
+    if(event.key==="Enter"){
+      event.preventDefault();
+      remote.connectInstructor(event.currentTarget.value);
+    }
   });
 
   $("advancePhaseBtn").onclick=()=>command("advancePhase");
@@ -232,13 +240,35 @@ export function setupAdvancedControl(api){
   $("quickTrickBtn").onclick=()=>command("scenarioTrick");
 
   const localApply=$("applyVitalsBtn").onclick;
-  $("applyVitalsBtn").onclick=()=>remote.isRemoteInstructor()?command("setVitals",{hr:+$("manualHr").value,spo2:+$("manualSpo2").value,sys:+$("manualSys").value,dia:+$("manualDia").value,rr:+$("manualRr").value,etco2:+$("manualEtco2").value,rhythm:$("rhythmSelect").value}):localApply?.();
+  $("applyVitalsBtn").onclick=()=>remote.isRemoteInstructor()?command("setVitals",{
+    hr:+$("manualHr").value,
+    spo2:+$("manualSpo2").value,
+    sys:+$("manualSys").value,
+    dia:+$("manualDia").value,
+    rr:+$("manualRr").value,
+    etco2:+$("manualEtco2").value,
+    rhythm:$("rhythmSelect").value
+  }):localApply?.();
+
   const localRhythm=$("rhythmSelect").onchange;
   $("rhythmSelect").onchange=event=>remote.isRemoteInstructor()?command("setRhythm",{rhythm:event.target.value}):localRhythm?.call($("rhythmSelect"),event);
+
   const localDeterioration=$("toggleDeteriorationBtn").onclick;
   $("toggleDeteriorationBtn").onclick=event=>remote.isRemoteInstructor()?command("toggleDeterioration"):localDeterioration?.call(event.currentTarget,event);
+
+  const localCritical=$("criticalErrorBtn").onclick;
+  $("criticalErrorBtn").onclick=event=>{
+    if(remote.isRemoteInstructor()){
+      const message=prompt("Describe el error crítico:");
+      if(message)command("manualCriticalError",{message});
+      return;
+    }
+    localCritical?.call(event.currentTarget,event);
+  };
+
   const localDecision=$("decisionSelect").onchange;
   $("decisionSelect").onchange=event=>remote.isRemoteInstructor()?command("setDecision",{decision:event.target.value}):localDecision?.call($("decisionSelect"),event);
+
   const localFinish=$("instructorFinishBtn").onclick;
   $("instructorFinishBtn").onclick=event=>remote.isRemoteInstructor()?command("finish"):localFinish?.call(event.currentTarget,event);
 
