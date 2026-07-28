@@ -1,4 +1,7 @@
-SimCopilot EDUVESA V70.3
+SimCopilot EDUVESA V7.1.0
+Copiloto para instructores NRP y PALS
 39 escenarios PALS
 26 escenarios NRP
-Total: 65
+Total: 65 escenarios
+Control remoto en segundo dispositivo
+Instalable en celular, tableta y computadora
