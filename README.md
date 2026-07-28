@@ -1,21 +1,61 @@
-# SIM-COPILOT-EDUVESA-V70.3 — 65 ESCENARIOS
+# SimCopilot EDUVESA V7.1.0
 
-Biblioteca ampliada:
+Copiloto educativo para instructores de cursos **NRP y PALS**.
 
-- 39 escenarios PALS
-- 26 escenarios NRP
-- Total: 65 escenarios
+## Biblioteca clínica
 
-## Publicación en GitHub
+- 39 escenarios PALS.
+- 26 escenarios NRP.
+- 65 escenarios en total.
+- Dificultad básica, intermedia y avanzada.
+- Secuencias algorítmicas, monitor dinámico, registro, voz y debriefing estructurado.
 
-1. Descomprima el ZIP.
-2. Abra la carpeta interna.
-3. Seleccione todo su contenido.
-4. Súbalo a la raíz del repositorio.
-5. Confirme que existan `css/`, `js/` y `assets/`.
-6. Configure GitHub Pages con `main` y `/ (root)`.
+## Modos de uso
 
-PIN inicial del instructor: `2026`.
+### Monitor del curso
 
-Uso exclusivamente educativo. Debe emplearse junto con los algoritmos,
-manuales y criterios vigentes de los programas oficiales.
+Utilice una computadora o tableta para seleccionar el escenario y mostrar el monitor del paciente. Puede activar **Modo monitor** para ocultar los controles y proyectar únicamente las curvas y signos vitales.
+
+### Instructor remoto
+
+Utilice un segundo teléfono, tableta o computadora:
+
+1. En el monitor abra **Panel instructor**.
+2. Introduzca el PIN inicial `2026`.
+3. Pulse **Crear sesión en monitor**.
+4. Espere a que aparezca un código activo `SIM-XXXXXX`.
+5. Comparta el enlace o introduzca el código en el segundo dispositivo.
+6. Desde el dispositivo remoto modifique FC, SpO₂, TA, FR, ETCO₂, ritmo, fases, deterioro y eventos.
+
+La conexión remota requiere internet y debe abrirse directamente en Safari, Chrome o Edge, no dentro del navegador interno de WhatsApp.
+
+### Práctica local
+
+El monitor y el panel instructor también pueden utilizarse en un solo dispositivo para demostraciones o preparación docente.
+
+## Instalación como aplicación
+
+SimCopilot es una PWA instalable:
+
+- iPhone/iPad: Safari → Compartir → Agregar a pantalla de inicio.
+- Android: Chrome → menú → Instalar aplicación.
+- Windows: Chrome o Edge → icono de instalación.
+- Mac: Safari → Archivo → Agregar al Dock, o Chrome → Instalar.
+
+Una vez instalada, se abre como una aplicación independiente. Los escenarios y la interfaz pueden permanecer disponibles sin conexión después de la primera carga; la conexión remota y la transcripción de voz requieren internet.
+
+## Funciones principales
+
+- Catálogo visual y búsqueda de escenarios.
+- Monitor con ECG, pletismografía y capnografía.
+- FC, SpO₂, TA, FR y ETCO₂ visibles.
+- Controles rápidos y valores preseleccionados.
+- Panel remoto del instructor.
+- Avance de fases, error crítico y evento sorpresa.
+- Grabación y transcripción de voz según compatibilidad del navegador.
+- Debriefing estructurado basado en conversación, cronología y objetivos.
+- Reporte descargable e impresión/PDF.
+
+## Seguridad y alcance
+
+Uso exclusivamente educativo. No sustituye manuales, algoritmos oficiales, protocolos institucionales ni juicio clínico. El facilitador debe revisar y contextualizar toda evaluación y debriefing generado por el sistema.
