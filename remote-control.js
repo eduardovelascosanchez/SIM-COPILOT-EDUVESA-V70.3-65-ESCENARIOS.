@@ -21,12 +21,13 @@ function setStatus(text,state=""){
 
 function friendlyError(err){
   const type=err?.type||err?.message||"unknown";
-  if(type==="peer-unavailable")return "No se encontró el monitor. En el dispositivo principal pulsa ‘Crear sesión en monitor’ y usa exactamente el código SIM-XXXXXX que aparezca. Mantén abierta esa pantalla.";
-  if(type==="unavailable-id")return "El código de sesión ya estaba ocupado. Se generará un código nuevo.";
-  if(type==="network"||type==="server-error"||type==="socket-error"||type==="socket-closed")return "No fue posible registrar la sesión. Revisa Internet y abre la página directamente en Safari o Chrome, no dentro de WhatsApp.";
+  if(type==="peer-unavailable")return "No se encontró el monitor. Verifica que el código esté activo y que la pantalla principal permanezca abierta.";
+  if(type==="unavailable-id")return "El código ya estaba ocupado. Se generará otro automáticamente.";
+  if(type==="network"||type==="server-error"||type==="socket-error"||type==="socket-closed")return "No fue posible registrar la sesión. Revisa Internet y abre la página directamente en Safari o Chrome.";
   if(type==="browser-incompatible")return "Este navegador no admite la conexión remota. Abre el enlace directamente en Safari o Chrome.";
-  if(type==="connection-timeout")return "El monitor no respondió. Verifica que la sesión siga abierta y que ambos dispositivos tengan Internet.";
-  if(type==="registration-timeout")return "No se pudo registrar el código en el servidor. Revisa Internet, abre la página directamente en Safari o Chrome y vuelve a pulsar el botón.";
+  if(type==="connection-timeout")return "El monitor no respondió. Verifica que siga abierto y conectado a Internet.";
+  if(type==="registration-timeout")return "El código se generó, pero no pudo activarse en el servidor. Revisa Internet y vuelve a intentarlo.";
+  if(type==="library-timeout")return "El código se generó, pero no se pudo cargar el módulo de conexión. Recarga la página en Safari o Chrome.";
   return `Error de conexión: ${type}`;
 }
 
@@ -85,77 +86,95 @@ function randomRoom(){
   return code;
 }
 
-function loadPeerJS(){
-  if(window.Peer)return Promise.resolve();
+function showCode(code,active=false){
+  const codeEl=document.getElementById("remoteRoomCode");
+  if(codeEl){
+    codeEl.textContent=code;
+    codeEl.dataset.active=active?"true":"false";
+  }
+  const input=document.getElementById("remoteRoomInput");
+  if(input)input.value=code;
+  const share=document.getElementById("copyRemoteLinkBtn");
+  if(share)share.disabled=!active;
+}
+
+function loadScript(src){
   return new Promise((resolve,reject)=>{
-    const existing=document.querySelector('script[data-peerjs="true"]');
-    if(existing){
-      if(window.Peer){resolve();return}
-      existing.addEventListener("load",resolve,{once:true});
-      existing.addEventListener("error",reject,{once:true});
-      return;
-    }
     const script=document.createElement("script");
+    script.src=src;
+    script.async=true;
     script.dataset.peerjs="true";
-    script.src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js";
-    script.onload=resolve;
-    script.onerror=reject;
+    const timer=setTimeout(()=>{script.remove();reject(new Error("library-timeout"))},7000);
+    script.onload=()=>{clearTimeout(timer);window.Peer?resolve():reject(new Error("library-timeout"))};
+    script.onerror=()=>{clearTimeout(timer);script.remove();reject(new Error("library-timeout"))};
     document.head.appendChild(script);
   });
 }
 
+async function loadPeerJS(){
+  if(window.Peer)return;
+  const existing=[...document.querySelectorAll('script[data-peerjs="true"]')];
+  existing.forEach(node=>node.remove());
+  const sources=[
+    "https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.5/peerjs.min.js",
+    "https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"
+  ];
+  let lastError=null;
+  for(const src of sources){
+    try{await loadScript(src);return}catch(error){lastError=error}
+  }
+  throw lastError||new Error("library-timeout");
+}
+
 function createPeer(id){
-  const options={
-    host:"0.peerjs.com",
-    port:443,
-    path:"/",
-    secure:true,
-    key:"peerjs",
+  const peerOptions={
     debug:1,
     config:{iceServers:[
       {urls:"stun:stun.l.google.com:19302"},
       {urls:"stun:stun1.l.google.com:19302"}
     ]}
   };
-  return id?new window.Peer(id,options):new window.Peer(options);
-}
-
-function showProvisionalCode(code){
-  const codeEl=document.getElementById("remoteRoomCode");
-  if(codeEl)codeEl.textContent=code;
-  const input=document.getElementById("remoteRoomInput");
-  if(input)input.value=code;
-  const share=document.getElementById("copyRemoteLinkBtn");
-  if(share)share.disabled=true;
+  return id?new window.Peer(id,peerOptions):new window.Peer(undefined,peerOptions);
 }
 
 export async function createMonitorRoom(attempt=0){
-  try{await loadPeerJS()}catch{
-    setStatus(friendlyError({type:"browser-incompatible"}),"error");
-    return false;
-  }
   clearConnectionTimers();
   if(connection){try{connection.close()}catch{}connection=null}
   if(peer&&!peer.destroyed)peer.destroy();
+
   roomId=randomRoom();
   role="monitor";
-  showProvisionalCode(roomId);
-  setStatus(`Registrando ${roomId}… espera la confirmación “Esperando instructor”.`,"pending");
-  peer=createPeer(roomId);
+  showCode(roomId,false);
+  setStatus(`Código generado: ${roomId}. Activando conexión…`,"pending");
+
+  try{
+    await loadPeerJS();
+  }catch(error){
+    setStatus(friendlyError(error),"error");
+    return false;
+  }
+
+  try{
+    peer=createPeer(roomId);
+  }catch(error){
+    setStatus(friendlyError(error),"error");
+    return false;
+  }
+
   registrationTimer=setTimeout(()=>{
     if(!peer?.open)setStatus(friendlyError({type:"registration-timeout"}),"error");
   },12000);
+
   peer.on("open",async id=>{
     if(registrationTimer)clearTimeout(registrationTimer);
     registrationTimer=null;
     roomId=id;
-    showProvisionalCode(id);
-    const share=document.getElementById("copyRemoteLinkBtn");
-    if(share)share.disabled=false;
+    showCode(id,true);
     setStatus("Esperando instructor. El código ya está activo; mantén esta pantalla abierta.","waiting");
     await requestWakeLock();
     options.onRoom?.(id,buildInstructorLink(id));
   });
+
   peer.on("connection",conn=>attachConnection(conn,"monitor"));
   peer.on("disconnected",()=>{
     setStatus("Reconectando el monitor…","pending");
@@ -193,17 +212,15 @@ function connectAttempt(clean,attempt=0){
 }
 
 export async function connectInstructor(code){
-  try{await loadPeerJS()}catch{
-    setStatus(friendlyError({type:"browser-incompatible"}),"error");
-    return false;
-  }
   const clean=(code||"").trim().toUpperCase();
   if(!ROOM_PATTERN.test(clean)){
-    setStatus("Código inválido. Debe comenzar con SIM- y contener 6 caracteres, por ejemplo SIM-AB12CD. No escribas un nombre libre.","error");
+    setStatus("Código inválido. Debe comenzar con SIM- y contener 6 caracteres, por ejemplo SIM-AB12CD.","error");
     options.onNotice?.("Usa el código generado por el dispositivo del monitor.");
     return false;
   }
-  if(isEmbeddedBrowser())options.onNotice?.("Para una conexión estable, abre esta página directamente en Safari o Chrome; evita el navegador interno de WhatsApp.");
+  if(isEmbeddedBrowser())options.onNotice?.("Abre esta página directamente en Safari o Chrome; evita el navegador interno de WhatsApp.");
+  setStatus(`Preparando conexión con ${clean}…`,"pending");
+  try{await loadPeerJS()}catch(error){setStatus(friendlyError(error),"error");return false}
   clearConnectionTimers();
   roomId=clean;
   role="instructor";
@@ -219,10 +236,7 @@ export function sendCommand(command,payload={}){
 
 export function sendSnapshot(snapshot){
   latestSnapshot=snapshot;
-  if(role==="monitor"&&connection?.open){
-    connection.send({type:"snapshot",snapshot});
-    return true;
-  }
+  if(role==="monitor"&&connection?.open){connection.send({type:"snapshot",snapshot});return true}
   return false;
 }
 
@@ -233,7 +247,7 @@ export function getRoomId(){return roomId}
 export function buildInstructorLink(id=roomId){
   const url=new URL(location.href);
   url.search="";
-  url.searchParams.set("v","70.10");
+  url.searchParams.set("v","70.11");
   url.searchParams.set("instructor","1");
   url.searchParams.set("room",id);
   return url.toString();
@@ -243,10 +257,7 @@ export async function shareInstructorLink(){
   if(!roomId||!ROOM_PATTERN.test(roomId))return false;
   const url=buildInstructorLink(roomId);
   try{
-    if(navigator.share){
-      await navigator.share({title:"SimCopilot EDUVESA — Panel instructor",text:`Código de sesión: ${roomId}`,url});
-      return true;
-    }
+    if(navigator.share){await navigator.share({title:"SimCopilot EDUVESA — Panel instructor",text:`Código de sesión: ${roomId}`,url});return true}
     await navigator.clipboard.writeText(url);
     return true;
   }catch{return false}
@@ -261,15 +272,10 @@ export function setupRemoteControl(config={}){
   options=config;
   const params=new URLSearchParams(location.search);
   const room=(params.get("room")||"").trim().toUpperCase();
-  if(room){
-    const input=document.getElementById("remoteRoomInput");
-    if(input)input.value=room;
-  }
+  if(room){const input=document.getElementById("remoteRoomInput");if(input)input.value=room}
   if(isEmbeddedBrowser())setTimeout(()=>options.onNotice?.("Estás abriendo SimCopilot desde un navegador interno. Para usar dos dispositivos, abre el enlace en Safari o Chrome."),700);
   document.addEventListener("visibilitychange",()=>{
-    if(document.visibilityState==="visible"&&role==="monitor"&&peer?.disconnected&&!peer.destroyed){
-      try{peer.reconnect()}catch{}
-    }
+    if(document.visibilityState==="visible"&&role==="monitor"&&peer?.disconnected&&!peer.destroyed){try{peer.reconnect()}catch{}}
   });
   return{createMonitorRoom,connectInstructor,sendCommand,sendSnapshot,copyInstructorLink,shareInstructorLink,isRemoteInstructor,isMonitorRole,getRoomId,autoRoom:room,instructorMode:params.get("instructor")==="1"};
 }
