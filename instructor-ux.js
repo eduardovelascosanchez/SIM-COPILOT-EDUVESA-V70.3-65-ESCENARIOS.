@@ -37,21 +37,21 @@ function setupMonitorMode(){
 }
 
 function setupRoleButtons(actions){
-  $("roleMonitorBtn")?.addEventListener("click",()=>{
-    setRoleLabel("Monitor del curso");
-    actions.openSetup?.();
-  });
-  $("roleLocalBtn")?.addEventListener("click",()=>{
-    setRoleLabel("Práctica local");
-    actions.openSetup?.();
-  });
-  $("roleInstructorBtn")?.addEventListener("click",()=>{
-    setRoleLabel("Instructor remoto");
-    $("instructorBtn")?.click();
-  });
+  $("roleMonitorBtn")?.addEventListener("click",()=>{setRoleLabel("Monitor del curso");actions.openSetup?.()});
+  $("roleLocalBtn")?.addEventListener("click",()=>{setRoleLabel("Práctica local");actions.openSetup?.()});
+  $("roleInstructorBtn")?.addEventListener("click",()=>{setRoleLabel("Instructor remoto");$("instructorBtn")?.click()});
   $("quickGuideBtn")?.addEventListener("click",()=>openDialog("guideDialog"));
   $("installGuideBtn")?.addEventListener("click",()=>openDialog("installDialog"));
   $("openScenarioLibraryBtn")?.addEventListener("click",()=>actions.openSetup?.());
+}
+
+function applyUrlAction(actions){
+  const params=new URLSearchParams(location.search);
+  if(params.get("instructor")==="1")setRoleLabel("Instructor remoto");
+  if(params.get("action")==="setup"){
+    setRoleLabel("Monitor del curso");
+    setTimeout(()=>actions.openSetup?.(),120);
+  }
 }
 
 export function setupScenarioBrowser(config){
@@ -68,10 +68,7 @@ export function setupScenarioBrowser(config){
     if(!visible.length){container.innerHTML='<div class="scenario-empty">No se encontraron escenarios con esos criterios.</div>';return}
     const selected=config.getSelectedId();
     container.innerHTML=visible.map(item=>`<button type="button" class="scenario-card ${item.id===selected?"selected":""}" data-scenario-id="${item.id}"><strong>${item.title}</strong><small>${item.patient}</small><div class="scenario-meta"><span>${item.difficulty}</span><span>${config.getProgram()}</span></div></button>`).join("");
-    container.querySelectorAll("[data-scenario-id]").forEach(button=>button.addEventListener("click",()=>{
-      config.onSelect(button.dataset.scenarioId);
-      render();
-    }));
+    container.querySelectorAll("[data-scenario-id]").forEach(button=>button.addEventListener("click",()=>{config.onSelect(button.dataset.scenarioId);render()}));
   }
   search.addEventListener("input",render);
   return{render};
@@ -81,6 +78,7 @@ export function setupInstructorUX(actions={}){
   setupRoleButtons(actions);
   setupMonitorMode();
   updateNetworkStatus();
+  applyUrlAction(actions);
   window.addEventListener("online",updateNetworkStatus);
   window.addEventListener("offline",updateNetworkStatus);
   document.querySelectorAll("[data-close-dialog]").forEach(button=>button.addEventListener("click",()=>button.closest("dialog")?.close()));
