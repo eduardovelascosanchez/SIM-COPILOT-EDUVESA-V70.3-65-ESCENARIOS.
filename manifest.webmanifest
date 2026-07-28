@@ -1,8 +1,8 @@
 {
-  "name": "SimCopilot EDUVESA V7.0.11 — Código remoto visible",
+  "name": "SimCopilot EDUVESA V7.0.12 — Control rápido de signos vitales",
   "short_name": "SimCopilot",
-  "description": "Simulador educativo con 65 escenarios PALS y NRP, panel instructor remoto, grabación y transcripción de voz y debriefing estructurado.",
-  "start_url": "./index.html?v=70.11",
+  "description": "Simulador educativo con 65 escenarios PALS y NRP, control remoto, ajustes preseleccionados de FC, SpO₂, TA, FR y ETCO₂, voz y debriefing estructurado.",
+  "start_url": "./index.html?v=70.12",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07141f",
