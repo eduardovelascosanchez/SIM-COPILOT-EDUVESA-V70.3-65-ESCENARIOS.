@@ -1,8 +1,8 @@
 {
-  "name": "SimCopilot EDUVESA V7.0.10 — Sesión remota corregida",
+  "name": "SimCopilot EDUVESA V7.0.11 — Código remoto visible",
   "short_name": "SimCopilot",
   "description": "Simulador educativo con 65 escenarios PALS y NRP, panel instructor remoto, grabación y transcripción de voz y debriefing estructurado.",
-  "start_url": "./index.html?v=70.10",
+  "start_url": "./index.html?v=70.11",
   "scope": "./",
   "display": "standalone",
   "background_color": "#07141f",
