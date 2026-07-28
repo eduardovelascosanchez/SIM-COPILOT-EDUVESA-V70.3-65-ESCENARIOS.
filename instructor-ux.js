@@ -36,13 +36,36 @@ function setupMonitorMode(){
   });
 }
 
+function expandScenarioLibrary(){
+  const container=$("scenarioCards"),toggle=$("scenarioToggleBtn");
+  container?.classList.remove("is-collapsed");
+  if(toggle){toggle.textContent="Ocultar escenarios";toggle.setAttribute("aria-expanded","true")}
+}
+
 function setupRoleButtons(actions){
-  $("roleMonitorBtn")?.addEventListener("click",()=>{setRoleLabel("Monitor del curso");actions.openSetup?.()});
-  $("roleLocalBtn")?.addEventListener("click",()=>{setRoleLabel("Práctica local");actions.openSetup?.()});
-  $("roleInstructorBtn")?.addEventListener("click",()=>{setRoleLabel("Instructor remoto");$("instructorBtn")?.click()});
+  $("roleMonitorBtn")?.addEventListener("click",()=>{
+    setRoleLabel("Monitor del curso");
+    actions.openSetup?.();
+    setTimeout(expandScenarioLibrary,0);
+  });
+  $("roleLocalBtn")?.addEventListener("click",()=>{
+    setRoleLabel("Práctica local");
+    actions.openSetup?.();
+    setTimeout(expandScenarioLibrary,0);
+  });
+  $("roleInstructorBtn")?.addEventListener("click",()=>{
+    setRoleLabel("Instructor remoto");
+    $("instructorBtn")?.click();
+  });
   $("quickGuideBtn")?.addEventListener("click",()=>openDialog("guideDialog"));
   $("installGuideBtn")?.addEventListener("click",()=>openDialog("installDialog"));
-  $("openScenarioLibraryBtn")?.addEventListener("click",()=>actions.openSetup?.());
+  $("openScenarioLibraryBtn")?.addEventListener("click",()=>{
+    actions.openSetup?.();
+    setTimeout(()=>{
+      expandScenarioLibrary();
+      $("scenarioSearch")?.focus();
+    },0);
+  });
 }
 
 function applyUrlAction(actions){
@@ -50,28 +73,69 @@ function applyUrlAction(actions){
   if(params.get("instructor")==="1")setRoleLabel("Instructor remoto");
   if(params.get("action")==="setup"){
     setRoleLabel("Monitor del curso");
-    setTimeout(()=>actions.openSetup?.(),120);
+    setTimeout(()=>{
+      actions.openSetup?.();
+      expandScenarioLibrary();
+    },120);
   }
 }
 
+function normalize(value=""){
+  return String(value).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+}
+
 export function setupScenarioBrowser(config){
-  const search=$("scenarioSearch"),container=$("scenarioCards"),count=$("scenarioVisibleCount");
-  if(!search||!container)return{render:()=>{}};
+  const search=$("scenarioSearch");
+  const container=$("scenarioCards");
+  const count=$("scenarioVisibleCount");
+  const toggle=$("scenarioToggleBtn");
+  if(!search||!container)return{render:()=>{},expand:()=>{}};
+
+  let collapsed=false;
+
+  function setCollapsed(next){
+    collapsed=!!next;
+    container.classList.toggle("is-collapsed",collapsed);
+    if(toggle){
+      toggle.textContent=collapsed?"Mostrar escenarios":"Ocultar escenarios";
+      toggle.setAttribute("aria-expanded",collapsed?"false":"true");
+    }
+  }
+
   function render(){
-    const query=search.value.trim().toLowerCase();
-    const scenarios=config.getFilteredScenarios();
+    const query=normalize(search.value.trim());
+    const source=config.getFilteredScenarios?.();
+    const scenarios=Array.isArray(source)?source:[];
     const visible=scenarios.filter(item=>{
-      const haystack=`${item.title} ${item.patient} ${item.narrative} ${item.difficulty}`.toLowerCase();
+      const haystack=normalize(`${item.title} ${item.patient} ${item.narrative} ${item.difficulty} ${config.getProgram?.()||""}`);
       return !query||haystack.includes(query);
     });
-    if(count)count.textContent=`${visible.length} escenario${visible.length===1?"":"s"}`;
-    if(!visible.length){container.innerHTML='<div class="scenario-empty">No se encontraron escenarios con esos criterios.</div>';return}
-    const selected=config.getSelectedId();
-    container.innerHTML=visible.map(item=>`<button type="button" class="scenario-card ${item.id===selected?"selected":""}" data-scenario-id="${item.id}"><strong>${item.title}</strong><small>${item.patient}</small><div class="scenario-meta"><span>${item.difficulty}</span><span>${config.getProgram()}</span></div></button>`).join("");
-    container.querySelectorAll("[data-scenario-id]").forEach(button=>button.addEventListener("click",()=>{config.onSelect(button.dataset.scenarioId);render()}));
+
+    if(count)count.textContent=`${visible.length} de ${scenarios.length} escenarios`;
+
+    if(!visible.length){
+      container.innerHTML='<div class="scenario-empty">No se encontraron escenarios. Selecciona “Todas” las dificultades o borra la búsqueda.</div>';
+      return;
+    }
+
+    const selected=config.getSelectedId?.();
+    container.innerHTML=visible.map(item=>`<button type="button" class="scenario-card ${item.id===selected?"selected":""}" data-scenario-id="${item.id}" aria-pressed="${item.id===selected?"true":"false"}"><strong>${item.title}</strong><small>${item.patient}</small><p>${item.narrative}</p><div class="scenario-meta"><span>${item.difficulty}</span><span>${config.getProgram?.()||""}</span></div></button>`).join("");
+
+    container.querySelectorAll("[data-scenario-id]").forEach(button=>button.addEventListener("click",()=>{
+      config.onSelect?.(button.dataset.scenarioId);
+      container.querySelectorAll(".scenario-card").forEach(card=>{
+        const active=card===button;
+        card.classList.toggle("selected",active);
+        card.setAttribute("aria-pressed",active?"true":"false");
+      });
+    }));
   }
+
   search.addEventListener("input",render);
-  return{render};
+  toggle?.addEventListener("click",()=>setCollapsed(!collapsed));
+  setCollapsed(false);
+
+  return{render,expand:()=>setCollapsed(false),collapse:()=>setCollapsed(true)};
 }
 
 export function setupInstructorUX(actions={}){
