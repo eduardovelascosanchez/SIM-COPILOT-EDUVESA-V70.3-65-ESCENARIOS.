@@ -1,5 +1,19 @@
 const $=id=>document.getElementById(id);
 
+function ensureCompatibilityElements(){
+  const homeActions=document.querySelector(".home-actions");
+  if(!$(`generatorBtn`)&&homeActions){
+    const button=document.createElement("button");
+    button.id="generatorBtn";
+    button.type="button";
+    button.className="btn";
+    button.textContent="Generar escenario";
+    homeActions.appendChild(button);
+  }
+}
+
+ensureCompatibilityElements();
+
 function openDialog(id){
   const dialog=$(id);
   if(dialog&&!dialog.open)dialog.showModal();
@@ -36,36 +50,13 @@ function setupMonitorMode(){
   });
 }
 
-function expandScenarioLibrary(){
-  const container=$("scenarioCards"),toggle=$("scenarioToggleBtn");
-  container?.classList.remove("is-collapsed");
-  if(toggle){toggle.textContent="Ocultar escenarios";toggle.setAttribute("aria-expanded","true")}
-}
-
 function setupRoleButtons(actions){
-  $("roleMonitorBtn")?.addEventListener("click",()=>{
-    setRoleLabel("Monitor del curso");
-    actions.openSetup?.();
-    setTimeout(expandScenarioLibrary,0);
-  });
-  $("roleLocalBtn")?.addEventListener("click",()=>{
-    setRoleLabel("Práctica local");
-    actions.openSetup?.();
-    setTimeout(expandScenarioLibrary,0);
-  });
-  $("roleInstructorBtn")?.addEventListener("click",()=>{
-    setRoleLabel("Instructor remoto");
-    $("instructorBtn")?.click();
-  });
+  $("roleMonitorBtn")?.addEventListener("click",()=>{setRoleLabel("Monitor del curso");actions.openSetup?.()});
+  $("roleLocalBtn")?.addEventListener("click",()=>{setRoleLabel("Práctica local");actions.openSetup?.()});
+  $("roleInstructorBtn")?.addEventListener("click",()=>{setRoleLabel("Instructor remoto");$("instructorBtn")?.click()});
   $("quickGuideBtn")?.addEventListener("click",()=>openDialog("guideDialog"));
   $("installGuideBtn")?.addEventListener("click",()=>openDialog("installDialog"));
-  $("openScenarioLibraryBtn")?.addEventListener("click",()=>{
-    actions.openSetup?.();
-    setTimeout(()=>{
-      expandScenarioLibrary();
-      $("scenarioSearch")?.focus();
-    },0);
-  });
+  $("openScenarioLibraryBtn")?.addEventListener("click",()=>actions.openSetup?.());
 }
 
 function applyUrlAction(actions){
@@ -73,15 +64,12 @@ function applyUrlAction(actions){
   if(params.get("instructor")==="1")setRoleLabel("Instructor remoto");
   if(params.get("action")==="setup"){
     setRoleLabel("Monitor del curso");
-    setTimeout(()=>{
-      actions.openSetup?.();
-      expandScenarioLibrary();
-    },120);
+    setTimeout(()=>actions.openSetup?.(),120);
   }
 }
 
 function normalize(value=""){
-  return String(value).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  return value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
 }
 
 export function setupScenarioBrowser(config){
@@ -89,7 +77,7 @@ export function setupScenarioBrowser(config){
   const container=$("scenarioCards");
   const count=$("scenarioVisibleCount");
   const toggle=$("scenarioToggleBtn");
-  if(!search||!container)return{render:()=>{},expand:()=>{}};
+  if(!search||!container)return{render:()=>{},expand:()=>{},collapse:()=>{}};
 
   let collapsed=false;
 
