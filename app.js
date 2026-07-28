@@ -26,7 +26,8 @@ function view(id){
 
 function openSetup(){
   view("setupView");
-  scenarioBrowser?.render();
+  scenarioBrowser?.expand?.();
+  scenarioBrowser?.render?.();
 }
 
 function toast(message){
@@ -41,6 +42,7 @@ function filteredScenarios(){
   const program=$("programSelect").value;
   const difficulty=$("difficultySelect").value;
   const all=getScenarios(program);
+  if(difficulty==="Todas")return all;
   const filtered=all.filter(item=>item.difficulty===difficulty);
   return filtered.length?filtered:all;
 }
@@ -51,7 +53,7 @@ function options(){
   $("scenarioSelect").innerHTML=scenarios.map(item=>`<option value="${item.id}">${item.title}</option>`).join("");
   if(scenarios.some(item=>item.id===previous))$("scenarioSelect").value=previous;
   preview();
-  scenarioBrowser?.render();
+  scenarioBrowser?.render?.();
 }
 
 function preview(){
@@ -59,7 +61,7 @@ function preview(){
   if(!scenario)return;
   $("scenarioPreview").innerHTML=`<b>${scenario.title}</b><br>${scenario.patient}<br><span class="muted">${scenario.narrative}</span>`;
   $("patientWeight").value=scenario.weight;
-  scenarioBrowser?.render();
+  scenarioBrowser?.render?.();
 }
 
 function vitals(){
@@ -138,7 +140,7 @@ async function finish(){
 
 $("startFlowBtn").addEventListener("click",openSetup);
 document.querySelectorAll("[data-go-home]").forEach(button=>button.addEventListener("click",event=>{event.preventDefault();view("homeView")}));
-$("generatorBtn").addEventListener("click",()=>$("generatorDialog").showModal());
+$("generatorBtn").addEventListener("click",()=>$ ("generatorDialog").showModal());
 $("programSelect").addEventListener("change",options);
 $("difficultySelect").addEventListener("change",options);
 $("scenarioSelect").addEventListener("change",preview);
