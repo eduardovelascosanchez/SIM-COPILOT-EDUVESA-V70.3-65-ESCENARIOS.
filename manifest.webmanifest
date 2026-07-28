@@ -1,8 +1,8 @@
 {
-  "name": "SimCopilot EDUVESA V7.1.0 — Copiloto para instructores NRP y PALS",
+  "name": "SimCopilot EDUVESA V7.1.1 — Biblioteca de escenarios corregida",
   "short_name": "SimCopilot",
-  "description": "Simulador educativo instalable con 65 escenarios PALS y NRP, monitor dinámico, control remoto del instructor, voz, registro y debriefing estructurado.",
-  "start_url": "./index.html?v=71.0",
+  "description": "Simulador educativo instalable con 65 escenarios PALS y NRP, biblioteca visual, monitor dinámico, control remoto del instructor, voz, registro y debriefing estructurado.",
+  "start_url": "./index.html?v=71.1",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
@@ -14,7 +14,7 @@
     {"src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
   ],
   "shortcuts": [
-    {"name": "Iniciar simulación", "short_name": "Simular", "url": "./index.html?v=71.0&action=setup", "icons": [{"src": "./icon-192.png", "sizes": "192x192"}]},
-    {"name": "Panel instructor", "short_name": "Instructor", "url": "./index.html?v=71.0&instructor=1", "icons": [{"src": "./icon-192.png", "sizes": "192x192"}]}
+    {"name": "Iniciar simulación", "short_name": "Simular", "url": "./index.html?v=71.1&action=setup", "icons": [{"src": "./icon-192.png", "sizes": "192x192"}]},
+    {"name": "Panel instructor", "short_name": "Instructor", "url": "./index.html?v=71.1&instructor=1", "icons": [{"src": "./icon-192.png", "sizes": "192x192"}]}
   ]
 }
