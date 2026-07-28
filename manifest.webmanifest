@@ -1,14 +1,20 @@
 {
-  "name": "SimCopilot EDUVESA V7.0.12 — Control rápido de signos vitales",
+  "name": "SimCopilot EDUVESA V7.1.0 — Copiloto para instructores NRP y PALS",
   "short_name": "SimCopilot",
-  "description": "Simulador educativo con 65 escenarios PALS y NRP, control remoto, ajustes preseleccionados de FC, SpO₂, TA, FR y ETCO₂, voz y debriefing estructurado.",
-  "start_url": "./index.html?v=70.12",
+  "description": "Simulador educativo instalable con 65 escenarios PALS y NRP, monitor dinámico, control remoto del instructor, voz, registro y debriefing estructurado.",
+  "start_url": "./index.html?v=71.0",
   "scope": "./",
   "display": "standalone",
+  "orientation": "any",
   "background_color": "#07141f",
   "theme_color": "#07141f",
+  "categories": ["education", "medical", "productivity"],
   "icons": [
-    {"src": "./icon-192.png", "sizes": "192x192", "type": "image/png"},
-    {"src": "./icon-512.png", "sizes": "512x512", "type": "image/png"}
+    {"src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ],
+  "shortcuts": [
+    {"name": "Iniciar simulación", "short_name": "Simular", "url": "./index.html?v=71.0&action=setup", "icons": [{"src": "./icon-192.png", "sizes": "192x192"}]},
+    {"name": "Panel instructor", "short_name": "Instructor", "url": "./index.html?v=71.0&instructor=1", "icons": [{"src": "./icon-192.png", "sizes": "192x192"}]}
   ]
 }
