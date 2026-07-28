@@ -3,17 +3,18 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#07141f">
-<title>SimCopilot EDUVESA V7.0.11</title>
+<title>SimCopilot EDUVESA V7.0.12</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <style>html,body{margin:0;min-height:100%;background:#07141f;color:#eef8fb}.view{display:none}.view.active{display:block}</style>
-<link rel="stylesheet" href="./styles.css?v=70.11">
-<link rel="stylesheet" href="./remote-fix.css?v=70.11">
+<link rel="stylesheet" href="./styles.css?v=70.12">
+<link rel="stylesheet" href="./remote-fix.css?v=70.12">
+<link rel="stylesheet" href="./vitals-control.css?v=70.12">
 </head>
 <body>
 <header class="topbar">
-  <div class="brand"><span class="logo">S</span><div><b>SimCopilot</b><small>EDUVESA · V7.0.11</small></div></div>
+  <div class="brand"><span class="logo">S</span><div><b>SimCopilot</b><small>EDUVESA · V7.0.12</small></div></div>
   <div><span id="connectionBadge" class="chip">Local</span> <button id="installBtn" class="btn hidden">Instalar</button> <button id="instructorBtn" class="btn">Panel instructor</button></div>
 </header>
 
@@ -21,7 +22,7 @@
 <section id="homeView" class="view active">
   <div class="hero">
     <div><p class="eyebrow">SIMULACIÓN CLÍNICA · PALS + NRP</p><h1>Entrena decisiones.<br><span>Observa la respuesta.</span></h1>
-    <p>Simulador modular con 65 escenarios, panel instructor remoto, control por voz y debriefing estructurado basado en la conversación.</p>
+    <p>Simulador modular con 65 escenarios, control remoto, ajustes rápidos preseleccionados de signos vitales, control por voz y debriefing estructurado.</p>
     <button id="startFlowBtn" class="btn primary">Iniciar simulación →</button>
     <button id="generatorBtn" class="btn">Generar escenario</button></div>
     <div class="panel preview"><h3>Vista previa del monitor</h3><canvas id="heroCanvas"></canvas><div class="vitals"><div>FC<br><b>128</b></div><div>SpO₂<br><b>94</b></div><div>TA<br><b>82/46</b></div></div></div>
@@ -46,11 +47,17 @@
   <div class="heading"><div><p id="simProgram" class="eyebrow"></p><h2 id="simTitle"></h2></div><div id="timer" class="timer">00:00</div><div><button id="voiceBtn" class="btn" aria-pressed="false">Voz</button> <button id="pauseBtn" class="btn">Pausar</button> <button id="finishBtn" class="btn danger">Finalizar</button></div></div>
   <div class="simgrid">
     <section class="panel monitor">
-      <div class="heading"><b id="rhythmLabel">Sinusal</b><span id="patientLabel"></span></div>
+      <div class="heading"><b id="rhythmLabel">Sinusal</b><div class="monitor-status-line"><span id="patientLabel"></span><strong>TA · FR · ETCO₂</strong></div></div>
       <div class="wave"><span>II</span><canvas id="ecgCanvas"></canvas><b id="hrValue">120</b></div>
       <div class="wave"><span>SpO₂</span><canvas id="plethCanvas"></canvas><b id="spo2Value">96</b></div>
       <div class="wave"><span>CO₂</span><canvas id="capnoCanvas"></canvas><b id="etco2Value">35</b></div>
-      <div class="vitals four"><div>FC<br><b id="hrBottom">120</b></div><div>SpO₂<br><b id="spo2Bottom">96</b></div><div>TA<br><b id="bpValue">90/55</b></div><div>FR<br><b id="rrValue">24</b></div></div>
+      <div class="vitals five">
+        <div class="monitor-vital hr"><small>Frecuencia cardiaca</small><b id="hrBottom">120</b><span>lpm</span></div>
+        <div class="monitor-vital spo2"><small>Saturación</small><b id="spo2Bottom">96</b><span>%</span></div>
+        <div class="monitor-vital bp"><small>TA no invasiva</small><b id="bpValue">90/55</b><span>mmHg</span></div>
+        <div class="monitor-vital rr"><small>Frecuencia respiratoria</small><b id="rrValue">24</b><span>rpm</span></div>
+        <div class="monitor-vital etco2"><small>ETCO₂</small><b id="etco2Bottom">35</b><span>mmHg</span></div>
+      </div>
     </section>
     <aside class="panel form"><p class="eyebrow">PRESENTACIÓN</p><p id="caseNarrative"></p><p><b id="goalCount">0/0</b></p><progress id="goalProgress" max="100" value="0"></progress><div id="goalList"></div></aside>
     <section class="panel form"><div class="heading"><h3>Intervenciones</h3><span>Selecciona lo realizado</span></div><div id="interventionGrid" class="actions"></div>
@@ -67,7 +74,7 @@
 
 <dialog id="instructorDialog"><form method="dialog" class="dialog"><div class="heading"><h2>Panel instructor</h2><button type="button" class="btn" aria-label="Cerrar panel instructor" onclick="this.closest('dialog').close()">×</button></div>
 <div id="pinGate"><p>PIN inicial: <b>2026</b></p><input id="pinInput" type="password"><button id="unlockBtn" type="button" class="btn primary full">Desbloquear</button></div>
-<div id="instructorControls" class="hidden"><div class="grid3"><label>FC<input id="manualHr" type="number"></label><label>SpO₂<input id="manualSpo2" type="number"></label><label>TA sistólica<input id="manualSys" type="number"></label><label>TA diastólica<input id="manualDia" type="number"></label><label>FR<input id="manualRr" type="number"></label><label>ETCO₂<input id="manualEtco2" type="number"></label></div>
+<div id="instructorControls" class="hidden"><div class="grid3"><label>FC<input id="manualHr" type="number" min="0" max="300" step="1"></label><label>SpO₂<input id="manualSpo2" type="number" min="0" max="100" step="1"></label><label>TA sistólica<input id="manualSys" type="number" min="0" max="220" step="1"></label><label>TA diastólica<input id="manualDia" type="number" min="0" max="160" step="1"></label><label>FR<input id="manualRr" type="number" min="0" max="100" step="1"></label><label>ETCO₂<input id="manualEtco2" type="number" min="0" max="100" step="1"></label></div>
 <button id="applyVitalsBtn" type="button" class="btn full">Aplicar signos vitales</button><label>Ritmo<select id="rhythmSelect"><option>Sinusal</option><option>Bradicardia</option><option>TSV</option><option>TV</option><option>FV</option><option>AESP</option><option>Asistolia</option></select></label>
 <p><button id="toggleDeteriorationBtn" type="button" class="btn">Iniciar deterioro</button> <button id="criticalErrorBtn" type="button" class="btn danger">Registrar error crítico</button></p>
 <label>Decisión<select id="decisionSelect"><option value="">Automática</option><option>Aprueba</option><option>Remediación</option><option>No aprueba</option></select></label><button id="instructorFinishBtn" type="button" class="btn primary full">Finalizar escenario</button></div></form></dialog>
@@ -78,5 +85,5 @@
 
 <dialog id="noteDialog"><form method="dialog" id="noteForm" class="dialog"><div class="heading"><h2>Agregar nota</h2><button type="button" class="btn" aria-label="Cerrar nota" onclick="this.closest('dialog').close()">×</button></div><textarea id="noteText" rows="4" required></textarea><button type="submit" class="btn primary full">Guardar nota</button></form></dialog>
 <div id="toast" class="toast"></div>
-<script type="module" src="./app.js?v=70.11"></script>
+<script type="module" src="./app.js?v=70.12"></script>
 </body></html>
