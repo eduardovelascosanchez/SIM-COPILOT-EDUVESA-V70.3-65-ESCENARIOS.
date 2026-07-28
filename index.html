@@ -5,19 +5,19 @@
 <meta name="theme-color" content="#07141f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>SimCopilot EDUVESA V7.1.1</title>
+<title>SimCopilot EDUVESA V7.1.2</title>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="icon" href="./icon-192.png">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <style>html,body{margin:0;min-height:100%;background:#07141f;color:#eef8fb}.view{display:none}.view.active{display:block}</style>
-<link rel="stylesheet" href="./styles.css?v=71.1">
-<link rel="stylesheet" href="./remote-fix.css?v=71.1">
-<link rel="stylesheet" href="./vitals-control.css?v=71.1">
-<link rel="stylesheet" href="./instructor-ux.css?v=71.1">
+<link rel="stylesheet" href="./styles.css?v=71.2">
+<link rel="stylesheet" href="./remote-fix.css?v=71.2">
+<link rel="stylesheet" href="./vitals-control.css?v=71.2">
+<link rel="stylesheet" href="./instructor-ux.css?v=71.2">
 </head>
 <body>
 <header class="topbar">
-  <div class="brand"><span class="logo">S</span><div><b>SimCopilot</b><small>EDUVESA · V7.1.1</small></div></div>
+  <div class="brand"><span class="logo">S</span><div><b>SimCopilot</b><small>EDUVESA · V7.1.2</small></div></div>
   <div class="topbar-actions"><span id="roleBadge" class="chip">Elige un rol</span><span id="networkStatus" class="chip status-dot">Comprobando red</span><button id="installBtn" class="btn">Instalar app</button><button id="instructorBtn" class="btn">Panel instructor</button></div>
 </header>
 
@@ -28,7 +28,7 @@
       <p class="eyebrow">COPILOTO PARA INSTRUCTORES · NRP + PALS</p>
       <h1>Simula, controla y facilita.<br><span>Desde dos dispositivos.</span></h1>
       <p>Herramienta educativa con 65 escenarios, monitor dinámico, control remoto del instructor, voz, registro y debriefing estructurado.</p>
-      <div class="home-actions"><button id="startFlowBtn" class="btn primary">Comenzar una sesión →</button><button id="quickGuideBtn" class="btn">Ver guía rápida</button><button id="installGuideBtn" class="btn">Instalar en un dispositivo</button></div>
+      <div class="home-actions"><button id="startFlowBtn" class="btn primary">Comenzar una sesión →</button><button id="generatorBtn" class="btn">Generar escenario</button><button id="quickGuideBtn" class="btn">Ver guía rápida</button><button id="installGuideBtn" class="btn">Instalar en un dispositivo</button></div>
       <div class="feature-strip"><div class="feature-pill"><b>39</b><span>escenarios PALS</span></div><div class="feature-pill"><b>26</b><span>escenarios NRP</span></div><div class="feature-pill"><b>2</b><span>dispositivos enlazados</span></div><div class="feature-pill"><b>PWA</b><span>celular, tableta y computadora</span></div></div>
     </div>
     <div class="panel preview"><div class="heading"><div><p class="eyebrow">MONITOR DEL PACIENTE</p><h3>Vista previa</h3></div><span class="chip">FC · SpO₂ · TA · FR · ETCO₂</span></div><canvas id="heroCanvas"></canvas><div class="vitals"><div>FC<br><b>128</b></div><div>SpO₂<br><b>94</b></div><div>TA<br><b>82/46</b></div></div></div>
@@ -57,10 +57,10 @@
       <div class="scenario-browser">
         <div class="scenario-browser-tools">
           <label>Buscar en la biblioteca<input id="scenarioSearch" type="search" placeholder="Ej. bradicardia, choque, prematuro, ventilación"></label>
-          <div class="scenario-browser-actions"><span id="scenarioVisibleCount" class="chip">0 escenarios</span><button id="scenarioToggleBtn" type="button" class="btn" aria-expanded="true">Ocultar escenarios</button></div>
+          <div class="scenario-browser-actions"><span id="scenarioVisibleCount" class="chip">Cargando escenarios…</span><button id="scenarioToggleBtn" type="button" class="btn" aria-expanded="true">Ocultar escenarios</button></div>
         </div>
         <p class="scenario-help">Toca una tarjeta para seleccionar el caso. Con “Todas” se muestran todos los escenarios del programa elegido.</p>
-        <div id="scenarioCards" class="scenario-cards"></div>
+        <div id="scenarioCards" class="scenario-cards"><div class="scenario-empty">Cargando biblioteca de escenarios…</div></div>
       </div>
       <div class="grid2"><label>Instructor<input id="instructorName" placeholder="Nombre del instructor"></label><label>Equipo<input id="teamName" placeholder="Ej. Equipo Alfa"></label></div>
       <label>Peso del paciente (kg)<input id="patientWeight" type="number" step="0.1" value="20"></label>
@@ -92,5 +92,5 @@
 <dialog id="generatorDialog"><form method="dialog" id="generatorForm" class="dialog"><div class="heading"><h2>Generador de escenarios</h2><button type="button" class="btn" aria-label="Cerrar generador" onclick="this.closest('dialog').close()">×</button></div><div class="grid2"><label>Programa<select id="genProgram"><option>PALS</option><option>NRP</option></select></label><label>Dificultad<select id="genDifficulty"><option>Básica</option><option>Intermedia</option><option>Avanzada</option></select></label></div><label>Problema principal<input id="genProblem" required></label><label>Tipo de paciente<input id="genPatient" required></label><button type="submit" class="btn primary full">Crear borrador</button><div id="generatedScenario" class="notice hidden"></div></form></dialog>
 <dialog id="noteDialog"><form method="dialog" id="noteForm" class="dialog"><div class="heading"><h2>Agregar nota</h2><button type="button" class="btn" aria-label="Cerrar nota" onclick="this.closest('dialog').close()">×</button></div><textarea id="noteText" rows="4" required></textarea><button type="submit" class="btn primary full">Guardar nota</button></form></dialog>
 <div id="toast" class="toast"></div>
-<script type="module" src="./app.js?v=71.1"></script>
+<script type="module" src="./app.js?v=71.2"></script>
 </body></html>
